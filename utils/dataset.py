@@ -5,7 +5,11 @@ import pandas as pd
 import numpy as np
 import logging
 import json
+import tempfile
 import shutil
+from typing import Tuple
+from rich.progress import track
+
 
 def read_raw_sitk(
     binary_file_path: Path, image_size: Tuple[int], sitk_pixel_type: int = sitk.sitkInt16,
@@ -108,7 +112,7 @@ def parse_raw_images(data_path: Path, out_path: Path):
         # Parse raw image and parse landmarks
         img_out_paths, lm_out_paths, lm_pts_out_paths = [], [], []
         for img_path, lm_path in zip([i_img_path, e_img_path], [ilm_path, elm_path]):
-            img = data_utils.read_raw_sitk(
+            img = read_raw_sitk(
                 img_path, meta['size'], sitk.sitkInt16, meta['spacing'])
             # flip vertical axis:
             img_out_path = case_out_path / f'{img_path.stem}.nii.gz'
@@ -128,28 +132,29 @@ def parse_raw_images(data_path: Path, out_path: Path):
             lm_pts_out_path = case_out_path / f'{lm_path.stem}.csv'
             landmarks.to_csv(lm_pts_out_path, index=False, header=False)
             landmarks = landmarks.values
-
+            """
             # Generate landmarks mask
             lm_mask = data_utils.generate_lm_mask(landmarks, meta['size'])
             lm_mask = np.moveaxis(lm_mask, [0, 1, 2], [2, 1, 0])
 
             lm_out_path = case_out_path / f'{img_path.stem}_lm.nii.gz'
             utils.save_img_from_array_using_referece(lm_mask, img, str(lm_out_path))
-
+            """
             img_out_paths.append('/'.join(str(img_out_path).split('/')[-4:]))
-            lm_out_paths.append('/'.join(str(lm_out_path).split('/')[-4:]))
             lm_pts_out_paths.append('/'.join(str(lm_pts_out_path).split('/')[-4:]))
-
+            
         # Store the sample metadata
         metrics_keys = [
-            'disp_mean', 'disp_std', 'observers_mean', 'observers_std', 'lowest_mean', 'lowest_std']
-        row = img_out_paths + lm_out_paths + lm_pts_out_paths
-        row = row + [meta['partition']] + list(meta['size']) + list(meta['spacing']) + [case]
+            'disp_mean', 'disp_std', 
+            #'observers_mean', 'observers_std', 'lowest_mean', 'lowest_std'
+            ]
+        row = img_out_paths  + lm_pts_out_paths
+        row = row  + list(meta['size']) + list(meta['spacing']) + [case]
         row = row + [meta[key] for key in metrics_keys]
         df.append(row)
     columns = [
-        'i_img_path', 'e_img_path', 'i_lm_img_path', 'e_lm_img_path', 'i_lm_path', 'e_lm_path',
-        'partition', 'size_x', 'size_y', 'size_z', 'space_x', 'space_y', 'space_z', 'case'
+        'i_img_path', 'e_img_path','i_landmark_pts', 'e_landmark_pts'
+        , 'size_x', 'size_y', 'size_z', 'space_x', 'space_y', 'space_z', 'case'
     ]
     columns = columns + metrics_keys
     df = pd.DataFrame(df, columns=columns)
