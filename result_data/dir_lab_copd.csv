@@ -1,0 +1,5 @@
+,i_img_path,e_img_path,i_landmark_pts,e_landmark_pts,size_x,size_y,size_z,space_x,space_y,space_z,case,disp_mean,disp_std
+0,../result_data/copd1/copd1_iBHCT.nii.gz,../result_data/copd1/copd1_eBHCT.nii.gz,../result_data/copd1/copd1_300_iBH_xyz_r1.csv,../result_data/copd1/copd1_300_eBH_xyz_r1.csv,512,512,121,0.625,0.625,2.5,copd1,25.9,11.57
+1,../result_data/copd2/copd2_iBHCT.nii.gz,../result_data/copd2/copd2_eBHCT.nii.gz,../result_data/copd2/copd2_300_iBH_xyz_r1.csv,../result_data/copd2/copd2_300_eBH_xyz_r1.csv,512,512,102,0.645,0.645,2.5,copd2,21.77,6.46
+2,../result_data/copd3/copd3_iBHCT.nii.gz,../result_data/copd3/copd3_eBHCT.nii.gz,../result_data/copd3/copd3_300_iBH_xyz_r1.csv,../result_data/copd3/copd3_300_eBH_xyz_r1.csv,512,512,126,0.652,0.652,2.5,copd3,12.29,6.39
+3,../result_data/copd4/copd4_iBHCT.nii.gz,../result_data/copd4/copd4_eBHCT.nii.gz,../result_data/copd4/copd4_300_iBH_xyz_r1.csv,../result_data/copd4/copd4_300_eBH_xyz_r1.csv,512,512,126,0.59,0.59,2.5,copd4,30.9,13.49

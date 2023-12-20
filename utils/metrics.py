@@ -1,6 +1,8 @@
 import numpy as np
 from scipy.spatial.distance import euclidean
 from typing import Tuple
+from pathlib import Path
+import pandas as pd
 
 
 def target_registration_error(
@@ -23,3 +25,12 @@ def target_registration_error(
     pts_e = pts_e * voxel_size
     distances = [euclidean(pt1, pt2) for pt1, pt2 in zip(pts_i, pts_e)]
     return np.around(np.mean(distances), 2), np.around(np.std(distances), 2)
+
+def get_landmarks_array_from_txt_file(lm_out_filepath: Path):
+    """Parses the resulting txt from elastix to an array of landmark points [poits, [x,y,z]]"""
+    landmarks = pd.read_csv(lm_out_filepath, header=None, sep='\t |\t', engine='python')
+    landmarks.columns = [
+        'point', 'idx', 'input_index', 'input_point', 'ouput_index', 'ouput_point', 'def']
+    landmarks = [lm[-4:-1] for lm in np.asarray(landmarks.ouput_index.str.split(' '))]
+    landmarks = np.asarray(landmarks).astype('int')
+    return landmarks

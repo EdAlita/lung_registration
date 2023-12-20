@@ -9,6 +9,8 @@ import tempfile
 import shutil
 from typing import Tuple
 from rich.progress import track
+import matplotlib.pyplot as plt
+
 
 
 def read_raw_sitk(
@@ -158,4 +160,41 @@ def parse_raw_images(data_path: Path, out_path: Path):
     ]
     columns = columns + metrics_keys
     df = pd.DataFrame(df, columns=columns)
+    
     return df
+
+def plot_random_layers(nifti_file1, nifti_file2, case):
+    """
+    Plots a random layer from each of two 3D NIfTI files.
+
+    Parameters:
+    nifti_file1 (str): Path to the first NIfTI file.
+    nifti_file2 (str): Path to the second NIfTI file.
+    """
+
+    # Load the NIfTI files
+    img1 = sitk.ReadImage(nifti_file1)
+    img2 = sitk.ReadImage(nifti_file2)
+
+    # Convert the images to numpy arrays
+    data1 = sitk.GetArrayFromImage(img1)
+    data2 = sitk.GetArrayFromImage(img2)
+
+    # Ensure the data is 3D
+    if len(data1.shape) != 3 or len(data2.shape) != 3:
+        raise ValueError("One or both NIfTI files do not contain 3D data.")
+
+    # Choose a random layer from each file
+    print(f'Size: {data1.shape}')
+    layer1 = np.random.randint(data1.shape[0])
+
+    # Plotting
+    fig, axes = plt.subplots(1, 2, figsize=(10, 5))
+    axes[0].imshow(data1[layer1,: ,: ], cmap='gray')
+    axes[0].set_title(f'{case}_inhale')
+    axes[0].axis('off')
+    axes[1].imshow(data2[layer1, :,:], cmap='gray')
+    axes[1].set_title(f'{case}_exhale')
+    axes[1].axis('off')
+
+    plt.show()
