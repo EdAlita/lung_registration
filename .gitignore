@@ -160,4 +160,5 @@ cython_debug/
 #.idea/
 
 mira_env/
-results_data/
+result_data/
+elastix/
