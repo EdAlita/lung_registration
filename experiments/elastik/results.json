@@ -1,0 +1,156 @@
+{
+    "Baseline": {
+        "copd1": {
+            "mean_tre": 21.03,
+            "std_tre": 10.12,
+            "time": 150.01744318008423
+        },
+        "copd2": {
+            "mean_tre": 18.76,
+            "std_tre": 6.0,
+            "time": 124.74191951751709
+        },
+        "copd3": {
+            "mean_tre": 7.59,
+            "std_tre": 4.84,
+            "time": 157.216805934906
+        },
+        "copd4": {
+            "mean_tre": 24.55,
+            "std_tre": 9.36,
+            "time": 144.91205191612244
+        }
+    },
+    "Par0008_affine": {
+        "copd1": {
+            "mean_tre": 25.9,
+            "std_tre": 10.99,
+            "time": 13.748141050338745
+        },
+        "copd2": {
+            "mean_tre": 23.86,
+            "std_tre": 5.18,
+            "time": 11.228994369506836
+        },
+        "copd3": {
+            "mean_tre": 6.04,
+            "std_tre": 3.49,
+            "time": 13.92112421989441
+        },
+        "copd4": {
+            "mean_tre": 21.61,
+            "std_tre": 9.59,
+            "time": 13.563771486282349
+        }
+    },
+    "Par0003_affine": {
+        "copd1": {
+            "mean_tre": 25.91,
+            "std_tre": 10.99,
+            "time": 26.2857768535614
+        },
+        "copd2": {
+            "mean_tre": 24.61,
+            "std_tre": 5.38,
+            "time": 22.965598583221436
+        },
+        "copd3": {
+            "mean_tre": 5.9,
+            "std_tre": 3.33,
+            "time": 25.93819785118103
+        },
+        "copd4": {
+            "mean_tre": 21.62,
+            "std_tre": 9.58,
+            "time": 27.667027235031128
+        }
+    },
+    "MI.Coarse.Bspline_tuned": {
+        "copd1": {
+            "mean_tre": 8.8,
+            "std_tre": 4.81,
+            "time": 36.41515803337097
+        },
+        "copd2": {
+            "mean_tre": 13.15,
+            "std_tre": 6.29,
+            "time": 35.00586438179016
+        },
+        "copd3": {
+            "mean_tre": 4.91,
+            "std_tre": 2.97,
+            "time": 40.85681962966919
+        },
+        "copd4": {
+            "mean_tre": 9.86,
+            "std_tre": 4.04,
+            "time": 40.923175573349
+        }
+    },
+    "MI.Fine.Bspline_tuned": {
+        "copd1": {
+            "mean_tre": 26.33,
+            "std_tre": 11.42,
+            "time": 35.61926031112671
+        },
+        "copd2": {
+            "mean_tre": 21.79,
+            "std_tre": 6.46,
+            "time": 32.364458084106445
+        },
+        "copd3": {
+            "mean_tre": 12.64,
+            "std_tre": 6.38,
+            "time": 37.44685649871826
+        },
+        "copd4": {
+            "mean_tre": 29.58,
+            "std_tre": 12.92,
+            "time": 36.53909397125244
+        }
+    },
+    "MI.RP.Bspline_tuned": {
+        "copd1": {
+            "mean_tre": 8.84,
+            "std_tre": 5.33,
+            "time": 47.905848264694214
+        },
+        "copd2": {
+            "mean_tre": 16.06,
+            "std_tre": 7.61,
+            "time": 45.058653116226196
+        },
+        "copd3": {
+            "mean_tre": 5.3,
+            "std_tre": 2.95,
+            "time": 54.03801488876343
+        },
+        "copd4": {
+            "mean_tre": 9.66,
+            "std_tre": 3.74,
+            "time": 50.87167525291443
+        }
+    },
+    "GT": {
+        "copd1": {
+            "mean_tre": 25.9,
+            "std_tre": 11.57,
+            "time": 0
+        },
+        "copd2": {
+            "mean_tre": 21.77,
+            "std_tre": 6.46,
+            "time": 0
+        },
+        "copd3": {
+            "mean_tre": 12.29,
+            "std_tre": 6.39,
+            "time": 0
+        },
+        "copd4": {
+            "mean_tre": 30.9,
+            "std_tre": 13.49,
+            "time": 0
+        }
+    }
+}
