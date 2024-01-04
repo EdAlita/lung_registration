@@ -44,8 +44,7 @@ The project successfully achieved automated registration of lung MRI images, wit
 This project is licensed under the Creative Common Lincense - see the [LICENSE.md](LICENSE) file for details.
 
 ## Acknowledgments
-- Hat tip to anyone whose code was used
-- Inspiration
-- etc
+- To my mental stability for not pulling the trigger
+- ChatGPT
 
 (Note: Replace placeholders with actual information, including links to CONTRIBUTING.md, LICENSE.md, and detailed results.)
