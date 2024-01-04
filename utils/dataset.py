@@ -23,6 +23,15 @@ from mpl_toolkits.mplot3d.art3d import Poly3DCollection
 import scipy.misc
 
 def get_segmented_lungs(raw_im, plot=False):
+    """Generates a 2D mask of a image
+
+    Args:
+        raw_im (numpy): Numpy array of lung cut
+        plot (bool, optional): Plotting all the middle steps. Defaults to False.
+
+    Returns:
+        binary: Lung mask
+    """
     im=raw_im.copy()
     if plot == True:
         f, plots = plt.subplots(8, 1, figsize=(5, 40))
@@ -71,48 +80,43 @@ def get_segmented_lungs(raw_im, plot=False):
         plots[7].imshow(im, cmap=plt.cm.bone ) 
     return binary
 
-def get_segmented_lungs_3d(image_volume, output_path, spacing=(1.0, 1.0, 1.0)):
-    # Create an empty volume for the binary masks
+def get_segmented_lungs_3d(image_volume, output_path: str):
+    """Used the 2D image generator to produce the 3D one
+
+    Args:
+        image_volume (numpy): 3D numpy array
+        output_path (path): path to write the image
+    Returns:
+        binary: 3D binary retun for debugg purpose
+    """
     binary_masks = np.zeros_like(image_volume)
 
-    # Apply lung segmentation to each slice in the 3D volume
     for i in range(image_volume.shape[0]):
         slice_image = image_volume[i, :, :]
         binary_mask = get_segmented_lungs(slice_image)
         binary_masks[i, :, :] = binary_mask
-
-    # Convert the binary mask array to a SimpleITK image
     binary_mask_sitk = sitk.GetImageFromArray(binary_masks.astype(np.uint8))
 
-    # Set the spacing information
-    #binary_mask_sitk.SetSpacing(spacing)
-
-    # Set the origin information (you may need to adjust this)
-    #binary_mask_sitk.SetOrigin((0.0, 0.0, 0.0))  # Adjust origin if necessary
-
-    # Save the SimpleITK image as a NIfTI file
     sitk.WriteImage(binary_mask_sitk, output_path)
-    
+
     return binary_masks
 
 def read_raw_sitk(
     binary_file_path: Path, image_size: Tuple[int], sitk_pixel_type: int = sitk.sitkInt16,
     image_spacing: Tuple[float] = None, image_origin: Tuple[float] = None, big_endian: bool = False
 ) -> sitk.Image:
-    """ Reads a raw binary scalar image.
+    """Reads a image raw data to create sitk Image
+
     Args:
-        binary_file_path (Path): Raw, binary image file path.
-        image_size (Tuple): Size of image (e.g. (512, 512, 121))
-        sitk_pixel_type (int, optional): Pixel type of data.
-            Defaults to sitk.sitkInt16.
-        image_spacing (Tuple, optional): Image spacing, if none given assumed
-            to be [1]*dim. Defaults to None.
-        image_origin (Tuple, optional): image origin, if none given assumed to
-            be [0]*dim. Defaults to None.
-        big_endian (bool, optional): Byte order indicator, if True big endian, else
-            little endian. Defaults to False.
+        binary_file_path (Path): location of the binary
+        image_size (Tuple[int]): Size of the image to produce
+        sitk_pixel_type (int, optional): pixel type of the image. Defaults to sitk.sitkInt16.
+        image_spacing (Tuple[float], optional): spacing of the image. Defaults to None.
+        image_origin (Tuple[float], optional): origin of the image. Defaults to None.
+        big_endian (bool, optional): . Defaults to False.
+
     Returns:
-        (sitk.Image): Loaded image.
+        sitk.Image: produce the itk image
     """
     pixel_dict = {
         sitk.sitkUInt8: "MET_UCHAR",
@@ -165,14 +169,14 @@ def read_raw_sitk(
     return img
 
 def parse_raw_images(data_path: Path, out_path: Path):
-    """
-    Parses the raw images contained in data_path.
+    """Produce the data structure from a datapath of raw images and points
+
     Args:
-        data_path (Path): path to the directory containing the raw cases
-        out_path (Path): path to the directory where the parsed .nii versions
-            will be saved
+        data_path (Path): location of the data to convert
+        out_path (Path): space to save this data
+
     Returns:
-        (pd.DataFrame): dataframe of the metadata to be used in the CopdDataset class
+        dataframe: all the locations and information of the images
     """
     with open(str(data_path.parent / 'dir_lab_copd_metadata.json'), 'r') as json_file:
         dirlab_meta = json.load(json_file)
@@ -220,20 +224,12 @@ def parse_raw_images(data_path: Path, out_path: Path):
             img = sitk.GetArrayFromImage(sitk.ReadImage(str(img_out_path)))
             _ = get_segmented_lungs_3d(img,output_path=str(mask_out_path))
 
-            """
-            # Generate landmarks mask
-            lm_mask = get_segmented_lungs(landmarks, meta['size'])
-
-            lm_out_path = case_out_path / f'{img_path.stem}_lm.nii.gz'
-            utils.save_img_from_array_using_referece(lm_mask, img, str(lm_out_path))
-            """
             img_out_paths.append('/'.join(str(img_out_path).split('/')[-4:]))
             lm_pts_out_paths.append('/'.join(str(lm_pts_out_path).split('/')[-4:]))
             mask_out_paths.append('/'.join(str(mask_out_path).split('/')[-4:]))
         # Store the sample metadata
         metrics_keys = [
             'disp_mean', 'disp_std', 
-            #'observers_mean', 'observers_std', 'lowest_mean', 'lowest_std'
             ]
         row = img_out_paths  + lm_pts_out_paths + mask_out_paths
         row = row  + list(meta['size']) + list(meta['spacing']) + [case]
@@ -249,10 +245,9 @@ def parse_raw_images(data_path: Path, out_path: Path):
     return df
 
 def plot_random_layers(nifti_file1, nifti_file2, case):
-    """
-    Plots a random layer from each of two 3D NIfTI files.
+    """Plots a random layer from each of two 3D NIfTI files.
 
-    Parameters:
+    Args:
     nifti_file1 (str): Path to the first NIfTI file.
     nifti_file2 (str): Path to the second NIfTI file.
     """

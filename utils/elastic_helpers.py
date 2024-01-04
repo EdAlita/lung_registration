@@ -91,13 +91,15 @@ def transformix_wrapper(
     transformation_path: Path,
     points: bool = False
 ):
-    """Wraps elastix command line interfase into a python function
+    """"Wraps elastix command line interfase into a python function
+
     Args:
         mov_img_path (Path): Path to the moving image
         res_path (Path): Path where to store the register image and transformation parameters
         transformation_path (Path): Path to the transformation map file
-        points (bool, optional): Wheter to the things to transform are points or img
+        points (bool, optional): Wheter to the things to transform are points or img. Defaults to False.
     """
+
     # Fix filenames and create folders
     if points:
         if res_path.name.endswith('.txt'):
@@ -144,8 +146,7 @@ def modify_field_parameter_map(
     Args:
         field_value_list (List[tuple]): List of (Field, Value) pairs to modify
         in_par_map_path (Path): Path to the original parameter file
-        out_par_map_path (Path, optional): Path to the destiny parameter file
-            if None, then the original is overwritten. Defaults to None.
+        out_par_map_path (Path, optional): Path to the destiny parameter file if None, then the original is overwritten. Defaults to None.
     """
     pm = sitk.ReadParameterFile(str(in_par_map_path))
     for [field, value] in field_value_list:
