@@ -10,8 +10,90 @@ import shutil
 from typing import Tuple
 from rich.progress import track
 import matplotlib.pyplot as plt
+import skimage
+from skimage.morphology import ball, disk, dilation, binary_erosion, remove_small_objects, erosion, closing, reconstruction, binary_closing
+from skimage.measure import label,regionprops, perimeter
+from skimage.morphology import binary_dilation, binary_opening
+from skimage.filters import roberts, sobel
+from skimage import measure, feature
+from skimage.segmentation import clear_border, mark_boundaries
+from scipy import ndimage as ndi
+import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d.art3d import Poly3DCollection
+import scipy.misc
 
+def get_segmented_lungs(raw_im, plot=False):
+    im=raw_im.copy()
+    if plot == True:
+        f, plots = plt.subplots(8, 1, figsize=(5, 40))
+    binary = im < 400
+    if plot == True:
+        plots[0].axis('off')
+        plots[0].imshow(binary, cmap=plt.cm.bone) 
+    cleared = clear_border(binary)
+    if plot == True:
+        plots[1].axis('off')
+        plots[1].imshow(cleared, cmap=plt.cm.bone) 
+    label_image = label(cleared)
+    if plot == True:
+        plots[2].axis('off')
+        plots[2].imshow(label_image, cmap=plt.cm.bone) 
+    areas = [r.area for r in regionprops(label_image)]
+    areas.sort()
+    if len(areas) > 2:
+        for region in regionprops(label_image):
+            if region.area < areas[-2]:
+                for coordinates in region.coords:                
+                       label_image[coordinates[0], coordinates[1]] = 0
+    binary = label_image > 0
+    if plot == True:
+        plots[3].axis('off')
+        plots[3].imshow(binary, cmap=plt.cm.bone) 
+    selem = disk(2)
+    binary = binary_erosion(binary, selem)
+    if plot == True:
+        plots[4].axis('off')
+        plots[4].imshow(binary, cmap=plt.cm.bone) 
+    selem = disk(10)
+    binary = binary_closing(binary, selem)
+    if plot == True:
+        plots[5].axis('off')
+        plots[5].imshow(binary, cmap=plt.cm.bone) 
+    edges = roberts(binary)
+    binary = ndi.binary_fill_holes(edges)
+    if plot == True:
+        plots[6].axis('off')
+        plots[6].imshow(binary, cmap=plt.cm.bone) 
+    get_high_vals = binary == 0
+    im[get_high_vals] = 0
+    if plot == True:
+        plots[7].axis('off')
+        plots[7].imshow(im, cmap=plt.cm.bone ) 
+    return binary
 
+def get_segmented_lungs_3d(image_volume, output_path, spacing=(1.0, 1.0, 1.0)):
+    # Create an empty volume for the binary masks
+    binary_masks = np.zeros_like(image_volume)
+
+    # Apply lung segmentation to each slice in the 3D volume
+    for i in range(image_volume.shape[0]):
+        slice_image = image_volume[i, :, :]
+        binary_mask = get_segmented_lungs(slice_image)
+        binary_masks[i, :, :] = binary_mask
+
+    # Convert the binary mask array to a SimpleITK image
+    binary_mask_sitk = sitk.GetImageFromArray(binary_masks.astype(np.uint8))
+
+    # Set the spacing information
+    #binary_mask_sitk.SetSpacing(spacing)
+
+    # Set the origin information (you may need to adjust this)
+    #binary_mask_sitk.SetOrigin((0.0, 0.0, 0.0))  # Adjust origin if necessary
+
+    # Save the SimpleITK image as a NIfTI file
+    sitk.WriteImage(binary_mask_sitk, output_path)
+    
+    return binary_masks
 
 def read_raw_sitk(
     binary_file_path: Path, image_size: Tuple[int], sitk_pixel_type: int = sitk.sitkInt16,
@@ -99,7 +181,6 @@ def parse_raw_images(data_path: Path, out_path: Path):
     for case_path in sorted(data_path.iterdir()):
         # Define paths
         case = case_path.name
-        logging.info(f'Parsing case: {case}')
         ilm_path = case_path / f'{case}_300_iBH_xyz_r1.txt'
         i_img_path = case_path / f'{case}_iBHCT.img'
         elm_path = case_path / f'{case}_300_eBH_xyz_r1.txt'
@@ -112,7 +193,7 @@ def parse_raw_images(data_path: Path, out_path: Path):
         meta = dirlab_meta[case]
 
         # Parse raw image and parse landmarks
-        img_out_paths, lm_out_paths, lm_pts_out_paths = [], [], []
+        img_out_paths, mask_out_paths, lm_pts_out_paths = [], [], []
         for img_path, lm_path in zip([i_img_path, e_img_path], [ilm_path, elm_path]):
             img = read_raw_sitk(
                 img_path, meta['size'], sitk.sitkInt16, meta['spacing'])
@@ -134,28 +215,32 @@ def parse_raw_images(data_path: Path, out_path: Path):
             lm_pts_out_path = case_out_path / f'{lm_path.stem}.csv'
             landmarks.to_csv(lm_pts_out_path, index=False, header=False)
             landmarks = landmarks.values
+
+            mask_out_path = case_out_path / f'{img_path.stem}_masks.nii.gz'
+            img = sitk.GetArrayFromImage(sitk.ReadImage(str(img_out_path)))
+            _ = get_segmented_lungs_3d(img,output_path=str(mask_out_path))
+
             """
             # Generate landmarks mask
-            lm_mask = data_utils.generate_lm_mask(landmarks, meta['size'])
-            lm_mask = np.moveaxis(lm_mask, [0, 1, 2], [2, 1, 0])
+            lm_mask = get_segmented_lungs(landmarks, meta['size'])
 
             lm_out_path = case_out_path / f'{img_path.stem}_lm.nii.gz'
             utils.save_img_from_array_using_referece(lm_mask, img, str(lm_out_path))
             """
             img_out_paths.append('/'.join(str(img_out_path).split('/')[-4:]))
             lm_pts_out_paths.append('/'.join(str(lm_pts_out_path).split('/')[-4:]))
-            
+            mask_out_paths.append('/'.join(str(mask_out_path).split('/')[-4:]))
         # Store the sample metadata
         metrics_keys = [
             'disp_mean', 'disp_std', 
             #'observers_mean', 'observers_std', 'lowest_mean', 'lowest_std'
             ]
-        row = img_out_paths  + lm_pts_out_paths
+        row = img_out_paths  + lm_pts_out_paths + mask_out_paths
         row = row  + list(meta['size']) + list(meta['spacing']) + [case]
         row = row + [meta[key] for key in metrics_keys]
         df.append(row)
     columns = [
-        'i_img_path', 'e_img_path','i_landmark_pts', 'e_landmark_pts'
+        'i_img_path', 'e_img_path','i_landmark_pts', 'e_landmark_pts','i_mask_path','e_mask_path'
         , 'size_x', 'size_y', 'size_z', 'space_x', 'space_y', 'space_z', 'case'
     ]
     columns = columns + metrics_keys
@@ -198,3 +283,6 @@ def plot_random_layers(nifti_file1, nifti_file2, case):
     axes[1].axis('off')
 
     plt.show()
+
+
+
