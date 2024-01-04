@@ -24,7 +24,7 @@ This project aims to address the challenge of registering lung MRI images betwee
 ### Notebooks
 - `01_dataset.ipynb`: Demonstrates how to load and preprocess the dataset.
 - `02_elastix.ipynb`: Details the implementation of the Elastix registration.
-- `03_ans.ipynb`: Implementation of [Advance Normalization Tool](https://github.com/ANTsX/ANTsPy).
+- `03_ans.ipynb`: Implementation of [Advance Normalization Tool](https://github.com/ANTsX/ANTsPy). **WIP**
 - `04_analyze_results.ipynb`: For analyzing and visualizing the results of the registration.
 
 ## Installation and Usage
