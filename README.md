@@ -41,7 +41,7 @@ The project successfully achieved automated registration of lung MRI images, wit
 - [Edwing Ulin](https://github.com/EdAlita)
 
 ## License
-This project is licensed under the MIT License - see the [LICENSE.md](MIT-LICENSE.txt) file for details.
+This project is licensed under the Creative Common Lincense - see the [LICENSE.md](LICENSE) file for details.
 
 ## Acknowledgments
 - Hat tip to anyone whose code was used
