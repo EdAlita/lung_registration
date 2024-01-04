@@ -46,5 +46,3 @@ This project is licensed under the Creative Common Lincense - see the [LICENSE.m
 ## Acknowledgments
 - To my mental stability for not pulling the trigger
 - ChatGPT
-
-(Note: Replace placeholders with actual information, including links to CONTRIBUTING.md, LICENSE.md, and detailed results.)
