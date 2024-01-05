@@ -1,6 +1,5 @@
 (AutomaticTransformInitialization "true")
 (AutomaticTransformInitializationMethod "GeometricalCenter")
-
 // ********** Image Types
 
 (FixedInternalImagePixelType "float")
@@ -8,24 +7,23 @@
 (MovingInternalImagePixelType "float")
 (MovingImageDimension 3)
 
-(AutomaticParameterEstimation "true")
-
-//***************testing
-(UseAdaptiveStepSizes "true")
 
 // ********** Components
 
 (Registration "MultiResolutionRegistration")
+//(FixedImagePyramid "FixedSmoothingImagePyramid")
+//(MovingImagePyramid "MovingSmoothingImagePyramid")
 (FixedImagePyramid "FixedRecursiveImagePyramid")
 (MovingImagePyramid "MovingRecursiveImagePyramid")
 (Interpolator "BSplineInterpolator")
-//(Metric "NormalizedMutualInformation")
-(Metric "AdvancedMattesMutualInformation")
-//(Optimizer "StandardGradientDescent")
-(Optimizer "AdaptiveStochasticGradientDescent")
+(Metric "NormalizedMutualInformation")
+//(Metric "AdvancedMattesMutualInformation")
+//(Optimizer "AdaptiveStochasticGradientDescent")
+(Optimizer "StandardGradientDescent")
 (ResampleInterpolator "FinalBSplineInterpolator")
 (Resampler "DefaultResampler")
 (Transform "BSplineTransform")
+
 
 
 // ********** Pyramid
@@ -36,8 +34,7 @@
 
 // ********** Transform
 
-//(FinalGridSpacingInPhysicalUnits 12)
-(FinalGridSpacingInVoxels 20 20 5)
+(FinalGridSpacingInPhysicalUnits 12.0 12.0 12.0)
 (GridSpacingSchedule 16.0 16.0 16.0 16.0 8.0 4.0 2.0 1.0)
 (HowToCombineTransforms "Compose")
 
@@ -48,19 +45,20 @@
 (MaximumNumberOfIterations 2000)
 
 //SP: Param_a in each resolution level. a_k = a/(A+k+1)^alpha
-(SP_a 10000.0)
+//(SP_a 10000.0)
+(SP_a 50000)
 
 //SP: Param_alpha in each resolution level. a_k = a/(A+k+1)^alpha
 (SP_alpha 0.602)
 
 //SP: Param_A in each resolution level. a_k = a/(A+k+1)^alpha
-(SP_A 80.0)
+(SP_A 50.0)
 
 
 // ********** Metric
 
 //Number of grey level bins in each resolution level:
-(NumberOfHistogramBins 16)
+(NumberOfHistogramBins 32)
 (FixedLimitRangeRatio 0.0)
 (MovingLimitRangeRatio 0.0)
 (FixedKernelBSplineOrder 1)
@@ -81,13 +79,14 @@
 // ********** ImageSampler
 
 //Number of spatial samples used to compute the mutual information in each resolution level:
+//(ImageSampler "RandomSparseMask")
 (ImageSampler "RandomCoordinate" "RandomCoordinate")
 
-(NumberOfSpatialSamples 3000)
+(NumberOfSpatialSamples 10000)
 (NewSamplesEveryIteration "true")
-(UseRandomSampleRegion "false")
-(SampleRegionSize 100)
-
+//(UseRandomSampleRegion "false")
+(UseRandomSampleRegion "true")
+(SampleRegionSize 100.0 100.0 100.0)
 
 // ********** Interpolator and Resampler
 
@@ -99,4 +98,3 @@
 
 //Default pixel value for pixels that come from outside the picture:
 (DefaultPixelValue 0)
-

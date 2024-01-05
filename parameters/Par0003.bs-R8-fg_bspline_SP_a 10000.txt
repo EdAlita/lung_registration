@@ -48,7 +48,7 @@
 (MaximumNumberOfIterations 2000)
 
 //SP: Param_a in each resolution level. a_k = a/(A+k+1)^alpha
-(SP_a 10000.0)
+(SP_a 20000.0)
 
 //SP: Param_alpha in each resolution level. a_k = a/(A+k+1)^alpha
 (SP_alpha 0.602)
@@ -99,4 +99,3 @@
 
 //Default pixel value for pixels that come from outside the picture:
 (DefaultPixelValue 0)
-

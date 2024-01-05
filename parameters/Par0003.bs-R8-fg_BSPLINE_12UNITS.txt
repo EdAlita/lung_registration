@@ -36,8 +36,8 @@
 
 // ********** Transform
 
-//(FinalGridSpacingInPhysicalUnits 12)
-(FinalGridSpacingInVoxels 20 20 5)
+(FinalGridSpacingInPhysicalUnits 12)
+//(FinalGridSpacingInVoxels 20 20 5)
 (GridSpacingSchedule 16.0 16.0 16.0 16.0 8.0 4.0 2.0 1.0)
 (HowToCombineTransforms "Compose")
 
@@ -48,7 +48,7 @@
 (MaximumNumberOfIterations 2000)
 
 //SP: Param_a in each resolution level. a_k = a/(A+k+1)^alpha
-(SP_a 10000.0)
+//(SP_a 20000.0)
 
 //SP: Param_alpha in each resolution level. a_k = a/(A+k+1)^alpha
 (SP_alpha 0.602)
