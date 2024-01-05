@@ -22,105 +22,132 @@ import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d.art3d import Poly3DCollection
 import scipy.misc
 
-def get_segmented_lungs(raw_im, plot=False):
-    """Generates a 2D mask of a image
+def get_segmented_lungs(
+    raw_im: np.ndarray, plot: bool = False
+    ) -> np.ndarray:
+    """Generates a 2D mask of an image representing segmented lungs.
 
     Args:
-        raw_im (numpy): Numpy array of lung cut
-        plot (bool, optional): Plotting all the middle steps. Defaults to False.
+        raw_im (np.ndarray): Numpy array representing a lung slice.
+        plot (bool, optional): Whether to plot all the intermediate steps. Defaults to False.
 
     Returns:
-        binary: Lung mask
+        np.ndarray: Binary mask of segmented lungs.
     """
-    im=raw_im.copy()
-    if plot == True:
-        f, plots = plt.subplots(8, 1, figsize=(5, 40))
-    binary = im < 400
-    if plot == True:
-        plots[0].axis('off')
-        plots[0].imshow(binary, cmap=plt.cm.bone) 
-    cleared = clear_border(binary)
-    if plot == True:
-        plots[1].axis('off')
-        plots[1].imshow(cleared, cmap=plt.cm.bone) 
-    label_image = label(cleared)
-    if plot == True:
-        plots[2].axis('off')
-        plots[2].imshow(label_image, cmap=plt.cm.bone) 
-    areas = [r.area for r in regionprops(label_image)]
-    areas.sort()
-    if len(areas) > 2:
-        for region in regionprops(label_image):
-            if region.area < areas[-2]:
-                for coordinates in region.coords:                
-                       label_image[coordinates[0], coordinates[1]] = 0
-    binary = label_image > 0
-    if plot == True:
-        plots[3].axis('off')
-        plots[3].imshow(binary, cmap=plt.cm.bone) 
-    selem = disk(2)
-    binary = binary_erosion(binary, selem)
-    if plot == True:
-        plots[4].axis('off')
-        plots[4].imshow(binary, cmap=plt.cm.bone) 
-    selem = disk(10)
-    binary = binary_closing(binary, selem)
-    if plot == True:
-        plots[5].axis('off')
-        plots[5].imshow(binary, cmap=plt.cm.bone) 
-    edges = roberts(binary)
-    binary = ndi.binary_fill_holes(edges)
-    if plot == True:
-        plots[6].axis('off')
-        plots[6].imshow(binary, cmap=plt.cm.bone) 
-    get_high_vals = binary == 0
-    im[get_high_vals] = 0
-    if plot == True:
-        plots[7].axis('off')
-        plots[7].imshow(im, cmap=plt.cm.bone ) 
-    return binary
+    if not isinstance(raw_im, np.ndarray):
+        raise ValueError("Input image must be a numpy array.")
 
-def get_segmented_lungs_3d(image_volume, output_path: str, spacing = (1.0,1.0,1.0)):
-    """Used the 2D image generator to produce the 3D one
+    try:
+        im = raw_im.copy()
+        plots = None
+        if plot:
+            f, plots = plt.subplots(8, 1, figsize=(5, 40))
+
+        def plot_step(data, index, cmap=plt.cm.bone):
+            if plot:
+                plots[index].axis('off')
+                plots[index].imshow(data, cmap=cmap)
+
+        binary = im < 400
+        plot_step(binary, 0)
+
+        cleared = clear_border(binary)
+        plot_step(cleared, 1)
+
+        label_image = label(cleared)
+        plot_step(label_image, 2)
+
+        areas = [r.area for r in regionprops(label_image)]
+        areas.sort()
+        if len(areas) > 2:
+            for region in regionprops(label_image):
+                if region.area < areas[-2]:
+                    for coordinates in region.coords:                
+                        label_image[coordinates[0], coordinates[1]] = 0
+
+        binary = label_image > 0
+        plot_step(binary, 3)
+
+        selem = disk(2)
+        binary = binary_erosion(binary, selem)
+        plot_step(binary, 4)
+
+        selem = disk(10)
+        binary = binary_closing(binary, selem)
+        plot_step(binary, 5)
+
+        edges = roberts(binary)
+        binary = ndi.binary_fill_holes(edges)
+        plot_step(binary, 6)
+
+        get_high_vals = binary == 0
+        im[get_high_vals] = 0
+        plot_step(im, 7)
+
+        return binary
+    except Exception as e:
+        raise RuntimeError(f"Error during lung segmentation: {e}")
+
+def get_segmented_lungs_3d(
+    image_volume: np.ndarray, output_path: str, spacing: list = [1.0, 1.0, 1.0]
+    ) -> np.ndarray:
+    """
+    Applies 2D lung segmentation to a 3D image volume.
 
     Args:
-        image_volume (numpy): 3D numpy array
-        output_path (path): path to write the image
+        image_volume (np.ndarray): 3D numpy array representing the image volume.
+        output_path (str): Path to write the segmented image.
+        spacing (list, optional): Spacing information for the image. Defaults to (1.0, 1.0, 1.0).
+
     Returns:
-        binary: 3D binary retun for debugg purpose
+        np.ndarray: 3D binary mask for debug purposes.
     """
-    binary_masks = np.zeros_like(image_volume)
+    if not isinstance(image_volume, np.ndarray) or image_volume.ndim != 3:
+        raise ValueError("image_volume must be a 3D numpy array.")
+    if not isinstance(spacing, list) or len(spacing) != 3:
+        raise ValueError("spacing must be a tuple of three elements.")
 
-    for i in range(image_volume.shape[0]):
-        slice_image = image_volume[i, :, :]
-        binary_mask = get_segmented_lungs(slice_image)
-        binary_masks[i, :, :] = binary_mask
-    binary_mask_sitk = sitk.GetImageFromArray(binary_masks.astype(np.uint8))
+    try:
+        binary_masks = np.zeros_like(image_volume)
 
-    # Set the spacing information
-    binary_mask_sitk.SetSpacing(spacing)
+        for i in range(image_volume.shape[0]):
+            slice_image = image_volume[i, :, :]
+            binary_mask = get_segmented_lungs(slice_image)
+            binary_masks[i, :, :] = binary_mask
 
-    sitk.WriteImage(binary_mask_sitk, output_path)
+        binary_mask_sitk = sitk.GetImageFromArray(binary_masks.astype(np.uint8))
+        binary_mask_sitk.SetSpacing(spacing)
+        sitk.WriteImage(binary_mask_sitk, output_path)
 
-    return binary_masks
+        return binary_masks
+    except Exception as e:
+        raise RuntimeError(f"Error during 3D lung segmentation: {e}")
 
 def read_raw_sitk(
     binary_file_path: Path, image_size: Tuple[int], sitk_pixel_type: int = sitk.sitkInt16,
-    image_spacing: Tuple[float] = None, image_origin: Tuple[float] = None, big_endian: bool = False
+    image_spacing: Tuple[float, float, float] = None, image_origin: Tuple[float, float, float] = None, big_endian: bool = False
 ) -> sitk.Image:
-    """Reads a image raw data to create sitk Image
+    """
+    Reads a image raw data to create a SimpleITK Image.
 
     Args:
-        binary_file_path (Path): location of the binary
-        image_size (Tuple[int]): Size of the image to produce
-        sitk_pixel_type (int, optional): pixel type of the image. Defaults to sitk.sitkInt16.
-        image_spacing (Tuple[float], optional): spacing of the image. Defaults to None.
-        image_origin (Tuple[float], optional): origin of the image. Defaults to None.
-        big_endian (bool, optional): . Defaults to False.
+        binary_file_path (Path): Location of the binary file.
+        image_size (Tuple[int]): Size of the image to produce (e.g., (width, height) or (width, height, depth)).
+        sitk_pixel_type (int, optional): Pixel type of the image. Defaults to sitk.sitkInt16.
+        image_spacing (Tuple[float], optional): Spacing of the image. Defaults to None.
+        image_origin (Tuple[float], optional): Origin of the image. Defaults to None.
+        big_endian (bool, optional): Set to True for big endian data. Defaults to False.
 
     Returns:
-        sitk.Image: produce the itk image
+        sitk.Image: The resulting SimpleITK image.
     """
+    # Input validation
+    if not binary_file_path.is_file():
+        raise FileNotFoundError(f"The file {binary_file_path} does not exist.")
+    if len(image_size) not in [2, 3]:
+        raise ValueError("image_size must be a 2D or 3D tuple.")
+    # Add validations for image_spacing and image_origin if needed
+
     pixel_dict = {
         sitk.sitkUInt8: "MET_UCHAR",
         sitk.sitkInt8: "MET_CHAR",
@@ -161,17 +188,52 @@ def read_raw_sitk(
         ("BinaryDataByteOrderMSB = " + str(big_endian) + "\n").encode(),
         (f"ElementDataFile = {binary_file_path.resolve()}\n").encode(),
     ]
-    fp = tempfile.NamedTemporaryFile(suffix=".mhd", delete=False)
-    # Not using the tempfile with a context manager and auto-delete
-    # because on windows we can't open the file a second time for ReadImage.
-    fp.writelines(header)
-    fp.close()
 
-    img = sitk.ReadImage(str(fp.name))
-    Path(fp.name).unlink()
+    # Using context manager for temporary file handling
+    try:
+        with tempfile.NamedTemporaryFile(suffix=".mhd", delete=False) as fp:
+            fp.writelines(header)
+            temp_file_name = fp.name
+
+        img = sitk.ReadImage(temp_file_name)
+    finally:
+        Path(temp_file_name).unlink()
+
     return img
+def generate_landmark_transformix_header(
+    case_out_path: Path, lm_path: Path
+):
+    """Puts the header for using with transformix
 
-def parse_raw_images(data_path: Path, out_path: Path):
+    Args:
+        case_out_path (Path): case path 
+        lm_path (Path): out path for the document
+    """
+    txt_out_file = case_out_path / f'{lm_path.stem}.txt'
+    shutil.copy(str(lm_path), str(txt_out_file))
+    with open(txt_out_file, 'r+') as f:
+        content = f.read()
+        f.seek(0, 0)
+        f.write('index' + '\n' + '300' + '\n' + content)
+
+def generate_csv_from_landmarks(
+    case_out_path: Path,lm_path: Path
+) -> Path:
+    """Generates the csv from the points given
+
+    Args:
+        case_out_path (Path): case path 
+        lm_path (Path): out path for the document
+    """
+    landmarks = pd.read_csv(
+        lm_path, header=None, sep='\t |\t', engine='python').astype('int')
+    lm_pts_out_path = case_out_path / f'{lm_path.stem}.csv'
+    landmarks.to_csv(lm_pts_out_path, index=False, header=False)
+
+    return lm_pts_out_path
+
+def parse_raw_images(data_path: Path, out_path: Path
+):
     """Produce the data structure from a datapath of raw images and points
 
     Args:
@@ -181,6 +243,11 @@ def parse_raw_images(data_path: Path, out_path: Path):
     Returns:
         dataframe: all the locations and information of the images
     """
+    if not data_path.is_dir():
+        raise NotADirectoryError(f"The data path {data_path} is not a directory.")
+    if not out_path.is_dir():
+        raise NotADirectoryError(f"The output path {out_path} is not a directory.")
+
     with open(str(data_path.parent / 'dir_lab_copd_metadata.json'), 'r') as json_file:
         dirlab_meta = json.load(json_file)
 
@@ -204,24 +271,12 @@ def parse_raw_images(data_path: Path, out_path: Path):
         for img_path, lm_path in zip([i_img_path, e_img_path], [ilm_path, elm_path]):
             img = read_raw_sitk(
                 img_path, meta['size'], sitk.sitkInt16, meta['spacing'])
-            # flip vertical axis:
             img_out_path = case_out_path / f'{img_path.stem}.nii.gz'
             sitk.WriteImage(img, str(img_out_path))
 
-            # Generate a copy of the landmarks that includes transformix header
-            txt_out_file = case_out_path / f'{lm_path.stem}.txt'
-            shutil.copy(str(lm_path), str(txt_out_file))
-            with open(txt_out_file, 'r+') as f:
-                content = f.read()
-                f.seek(0, 0)
-                f.write('index' + '\n' + '300' + '\n' + content)
+            generate_landmark_transformix_header(case_out_path=case_out_path,lm_path=lm_path)
 
-            # Generate a csv version of the landmarks
-            landmarks = pd.read_csv(
-                lm_path, header=None, sep='\t |\t', engine='python').astype('int')
-            lm_pts_out_path = case_out_path / f'{lm_path.stem}.csv'
-            landmarks.to_csv(lm_pts_out_path, index=False, header=False)
-            landmarks = landmarks.values
+            lm_pts_out_path = generate_csv_from_landmarks(case_out_path=case_out_path,lm_path=lm_path)
 
             mask_out_path = case_out_path / f'{img_path.stem}_masks.nii.gz'
             img = sitk.GetArrayFromImage(sitk.ReadImage(str(img_out_path)))
@@ -230,7 +285,7 @@ def parse_raw_images(data_path: Path, out_path: Path):
             img_out_paths.append('/'.join(str(img_out_path).split('/')[-4:]))
             lm_pts_out_paths.append('/'.join(str(lm_pts_out_path).split('/')[-4:]))
             mask_out_paths.append('/'.join(str(mask_out_path).split('/')[-4:]))
-        # Store the sample metadata
+
         metrics_keys = [
             'disp_mean', 'disp_std', 
             ]
@@ -238,10 +293,12 @@ def parse_raw_images(data_path: Path, out_path: Path):
         row = row  + list(meta['size']) + list(meta['spacing']) + [case]
         row = row + [meta[key] for key in metrics_keys]
         df.append(row)
+
     columns = [
         'i_img_path', 'e_img_path','i_landmark_pts', 'e_landmark_pts','i_mask_path','e_mask_path'
         , 'size_x', 'size_y', 'size_z', 'space_x', 'space_y', 'space_z', 'case'
     ]
+
     columns = columns + metrics_keys
     df = pd.DataFrame(df, columns=columns)
     
@@ -254,24 +311,18 @@ def plot_random_layers(nifti_file1, nifti_file2, case):
     nifti_file1 (str): Path to the first NIfTI file.
     nifti_file2 (str): Path to the second NIfTI file.
     """
-
-    # Load the NIfTI files
     img1 = sitk.ReadImage(nifti_file1)
     img2 = sitk.ReadImage(nifti_file2)
 
-    # Convert the images to numpy arrays
     data1 = sitk.GetArrayFromImage(img1)
     data2 = sitk.GetArrayFromImage(img2)
 
-    # Ensure the data is 3D
     if len(data1.shape) != 3 or len(data2.shape) != 3:
         raise ValueError("One or both NIfTI files do not contain 3D data.")
 
-    # Choose a random layer from each file
     print(f'Size: {data1.shape}')
     layer1 = np.random.randint(data1.shape[0])
 
-    # Plotting
     fig, axes = plt.subplots(1, 2, figsize=(10, 5))
     axes[0].imshow(data1[layer1,: ,: ], cmap='gray')
     axes[0].set_title(f'{case}_inhale')
