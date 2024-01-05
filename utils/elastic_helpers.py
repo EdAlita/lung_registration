@@ -20,15 +20,11 @@ def elastix_wrapper(
         fix_img_path (Path): Path to the fix image
         mov_img_path (Path): Path to the moving image
         res_path (Path): Path where to store the register image and transformation parameters
-        fix_mask_path (Path, optional): Path to the fix image mask.
-            Defaults to None which means no mask is used
-        mov_mask_path (Path, optional): Path to the moving image mask.
-            Defaults to None which means no mask is used
+        fix_mask_path (Path, optional): Path to the fix image mask. Defaults to None which means no mask is used
+        mov_mask_path (Path, optional): Path to the moving image mask. Defaults to None which means no mask is used
         parameters_paths (List[Path]): List of Paths to the parameters map file to use
-        keep_just_useful_files (bool, optional): Wheter to delete the rubish Elastix outputs.
-            Defaults to True.
-        verbose (bool, optional): Wheter to the print the logs of elastix
-            Defaults to False.
+        keep_just_useful_files (bool, optional): Wheter to delete the rubish Elastix outputs. Defaults to True.
+        verbose (bool, optional): Wheter to the print the logs of elastix. Defaults to False.
     Returns:
         (Path): Path where the transformation matrix is stored
     """
