@@ -80,7 +80,7 @@ def get_segmented_lungs(raw_im, plot=False):
         plots[7].imshow(im, cmap=plt.cm.bone ) 
     return binary
 
-def get_segmented_lungs_3d(image_volume, output_path: str):
+def get_segmented_lungs_3d(image_volume, output_path: str, spacing = (1.0,1.0,1.0)):
     """Used the 2D image generator to produce the 3D one
 
     Args:
@@ -96,6 +96,9 @@ def get_segmented_lungs_3d(image_volume, output_path: str):
         binary_mask = get_segmented_lungs(slice_image)
         binary_masks[i, :, :] = binary_mask
     binary_mask_sitk = sitk.GetImageFromArray(binary_masks.astype(np.uint8))
+
+    # Set the spacing information
+    binary_mask_sitk.SetSpacing(spacing)
 
     sitk.WriteImage(binary_mask_sitk, output_path)
 
@@ -222,7 +225,7 @@ def parse_raw_images(data_path: Path, out_path: Path):
 
             mask_out_path = case_out_path / f'{img_path.stem}_masks.nii.gz'
             img = sitk.GetArrayFromImage(sitk.ReadImage(str(img_out_path)))
-            _ = get_segmented_lungs_3d(img,output_path=str(mask_out_path))
+            _ = get_segmented_lungs_3d(img,output_path=str(mask_out_path),spacing=meta['spacing'])
 
             img_out_paths.append('/'.join(str(img_out_path).split('/')[-4:]))
             lm_pts_out_paths.append('/'.join(str(lm_pts_out_path).split('/')[-4:]))
