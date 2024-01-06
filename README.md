@@ -34,7 +34,7 @@ This project aims to address the challenge of registering lung MRI images betwee
 
 
 ## Results
-The project successfully achieved automated registration of lung MRI images, with accuracy validated by TRE calculations. Detailed results are presented in the Jupyter notebooks.
+The project successfully achieved automated registration of lung MRI images, with accuracy validated by TRE calculations. Detailed results are presented in the [Jupyter notebooks](noteebooks/04_analyze_results.ipynb).
 
 ## Authors
 - [Colin Tenorio](https://github.com/CarmenColinTen)
