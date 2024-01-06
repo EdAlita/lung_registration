@@ -337,58 +337,6 @@
             "maks_on": false
         }
     },
-    "MI.RP.Bspline_tuned": {
-        "copd1": {
-            "mean_tre": 8.84,
-            "std_tre": 5.33,
-            "time": 47.69719624519348,
-            "maks_on": false
-        },
-        "copd2": {
-            "mean_tre": 16.06,
-            "std_tre": 7.61,
-            "time": 43.141737937927246,
-            "maks_on": false
-        },
-        "copd3": {
-            "mean_tre": 5.3,
-            "std_tre": 2.95,
-            "time": 47.320087909698486,
-            "maks_on": false
-        },
-        "copd4": {
-            "mean_tre": 9.66,
-            "std_tre": 3.74,
-            "time": 47.607789516448975,
-            "maks_on": false
-        }
-    },
-    "MI.Fine.Bspline_tuned": {
-        "copd1": {
-            "mean_tre": 26.33,
-            "std_tre": 11.42,
-            "time": 34.36710214614868,
-            "maks_on": false
-        },
-        "copd2": {
-            "mean_tre": 21.79,
-            "std_tre": 6.46,
-            "time": 29.086719751358032,
-            "maks_on": false
-        },
-        "copd3": {
-            "mean_tre": 12.64,
-            "std_tre": 6.38,
-            "time": 34.873449087142944,
-            "maks_on": false
-        },
-        "copd4": {
-            "mean_tre": 29.58,
-            "std_tre": 12.92,
-            "time": 33.57117509841919,
-            "maks_on": false
-        }
-    },
     "best_untilnow": {
         "copd1": {
             "mean_tre": 7.17,
@@ -412,32 +360,6 @@
             "mean_tre": 8.04,
             "std_tre": 4.17,
             "time": 136.1480586528778,
-            "maks_on": false
-        }
-    },
-    "MI.Coarse.Bspline_tuned": {
-        "copd1": {
-            "mean_tre": 8.8,
-            "std_tre": 4.81,
-            "time": 42.339178800582886,
-            "maks_on": false
-        },
-        "copd2": {
-            "mean_tre": 13.15,
-            "std_tre": 6.29,
-            "time": 33.96828246116638,
-            "maks_on": false
-        },
-        "copd3": {
-            "mean_tre": 4.91,
-            "std_tre": 2.97,
-            "time": 39.510090589523315,
-            "maks_on": false
-        },
-        "copd4": {
-            "mean_tre": 9.86,
-            "std_tre": 4.04,
-            "time": 38.755537033081055,
             "maks_on": false
         }
     },
@@ -465,28 +387,6 @@
             "std_tre": 5.28,
             "time": 936.1521849632263,
             "maks_on": false
-        }
-    },
-    "GT": {
-        "copd1": {
-            "mean_tre": 25.9,
-            "std_tre": 11.57,
-            "time": 0
-        },
-        "copd2": {
-            "mean_tre": 21.77,
-            "std_tre": 6.46,
-            "time": 0
-        },
-        "copd3": {
-            "mean_tre": 12.29,
-            "std_tre": 6.39,
-            "time": 0
-        },
-        "copd4": {
-            "mean_tre": 30.9,
-            "std_tre": 13.49,
-            "time": 0
         }
     }
 }

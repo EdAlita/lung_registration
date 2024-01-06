@@ -233,84 +233,6 @@
             "maks_on": true
         }
     },
-    "MI.Coarse.Bspline_tuned": {
-        "copd1": {
-            "mean_tre": 3.96,
-            "std_tre": 3.27,
-            "time": 45.13766860961914,
-            "maks_on": true
-        },
-        "copd2": {
-            "mean_tre": 5.47,
-            "std_tre": 5.21,
-            "time": 39.02898120880127,
-            "maks_on": true
-        },
-        "copd3": {
-            "mean_tre": 1.72,
-            "std_tre": 1.37,
-            "time": 48.41521072387695,
-            "maks_on": true
-        },
-        "copd4": {
-            "mean_tre": 4.37,
-            "std_tre": 2.96,
-            "time": 46.855239391326904,
-            "maks_on": true
-        }
-    },
-    "MI.RP.Bspline_tuned": {
-        "copd1": {
-            "mean_tre": 5.81,
-            "std_tre": 3.69,
-            "time": 57.10075521469116,
-            "maks_on": true
-        },
-        "copd2": {
-            "mean_tre": 7.43,
-            "std_tre": 5.73,
-            "time": 48.72061371803284,
-            "maks_on": true
-        },
-        "copd3": {
-            "mean_tre": 2.66,
-            "std_tre": 1.73,
-            "time": 61.78696012496948,
-            "maks_on": true
-        },
-        "copd4": {
-            "mean_tre": 6.73,
-            "std_tre": 3.69,
-            "time": 60.27991557121277,
-            "maks_on": true
-        }
-    },
-    "MI.Fine.Bspline_tuned": {
-        "copd1": {
-            "mean_tre": 26.33,
-            "std_tre": 11.42,
-            "time": 37.7351496219635,
-            "maks_on": true
-        },
-        "copd2": {
-            "mean_tre": 21.78,
-            "std_tre": 6.46,
-            "time": 30.780550479888916,
-            "maks_on": true
-        },
-        "copd3": {
-            "mean_tre": 12.64,
-            "std_tre": 6.39,
-            "time": 38.26262903213501,
-            "maks_on": true
-        },
-        "copd4": {
-            "mean_tre": 29.58,
-            "std_tre": 12.93,
-            "time": 36.79212021827698,
-            "maks_on": true
-        }
-    },
     "best_untilnow": {
         "copd1": {
             "mean_tre": 1.32,
@@ -335,28 +257,6 @@
             "std_tre": 1.12,
             "time": 138.95493125915527,
             "maks_on": true
-        }
-    },
-    "GT": {
-        "copd1": {
-            "mean_tre": 25.9,
-            "std_tre": 11.57,
-            "time": 0
-        },
-        "copd2": {
-            "mean_tre": 21.77,
-            "std_tre": 6.46,
-            "time": 0
-        },
-        "copd3": {
-            "mean_tre": 12.29,
-            "std_tre": 6.39,
-            "time": 0
-        },
-        "copd4": {
-            "mean_tre": 30.9,
-            "std_tre": 13.49,
-            "time": 0
         }
     }
 }
