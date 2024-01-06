@@ -38,22 +38,11 @@ def target_registration_error(
         raise RuntimeError(f"Error in calculating distances: {e}")
 
 
-def get_landmarks_array_from_txt_file(out_filepath: Path) -> np.ndarray:
-    """Parses a txt file to an array of landmark points.
-
-    Args:
-        out_filepath (Path): Path to the file.
-
-    Returns:
-        np.ndarray: Array of the landmarks.
-    """
-    if not out_filepath.is_file():
-        raise FileNotFoundError(f"The file {out_filepath} does not exist.")
-
-    try:
-        landmarks = pd.read_csv(out_filepath, header=None, sep='\t |\t', engine='python')
-        landmarks.columns = ['point', 'idx', 'input_index', 'input_point', 'output_index', 'output_point', 'def']
-        landmarks_array = landmarks['output_index'].str.split(' ', expand=True).iloc[:, -3:].to_numpy().astype('int')
-        return landmarks_array
-    except Exception as e:
-        raise RuntimeError(f"Error in reading or processing the file: {e}")
+def get_landmarks_array_from_txt_file(lm_out_filepath: Path):
+    """Parses the resulting txt from elastix to an array of landmark points [poits, [x,y,z]]"""
+    landmarks = pd.read_csv(lm_out_filepath, header=None, sep='\t |\t', engine='python')
+    landmarks.columns = [
+        'point', 'idx', 'input_index', 'input_point', 'ouput_index', 'ouput_point', 'def']
+    landmarks = [lm[-4:-1] for lm in np.asarray(landmarks.ouput_index.str.split(' '))]
+    landmarks = np.asarray(landmarks).astype('int')
+    return landmarks

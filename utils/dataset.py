@@ -229,7 +229,7 @@ def generate_csv_from_landmarks(
         lm_path, header=None, sep='\t |\t', engine='python').astype('int')
     lm_pts_out_path = case_out_path / f'{lm_path.stem}.csv'
     landmarks.to_csv(lm_pts_out_path, index=False, header=False)
-
+    
     return lm_pts_out_path
 
 def parse_raw_images(data_path: Path, out_path: Path
