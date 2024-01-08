@@ -1,10 +1,10 @@
 # Lung MRI Registration Project
 
 ## Introduction
-This project aims to address the challenge of registering lung MRI images between exhalation and inhalation phases. By aligning these images, the project seeks to facilitate detailed observation of lung tissue movement and changes. The effectiveness of image registration is evaluated using the Target Registration Error (TRE).
+This project aims to address the challenge of registering lung CT images between exhalation and inhalation phases. By aligning these images, the project seeks to facilitate detailed observation of lung tissue movement and changes. The effectiveness of image registration is evaluated using the Target Registration Error (TRE).
 
 ## Objectives
-1. Develop an algorithm for registering MRI lung images between exhalation and inhalation phases.
+1. Develop an algorithm for registering CT lung images between exhalation and inhalation phases.
 2. Automate the registration and TRE estimation process from 3D lung volumes.
 3. Validate the registration results through rigorous analysis.
 
@@ -45,8 +45,13 @@ The project successfully achieved automated registration of lung MRI images, wit
 ![alt text](https://github.com/EdAlita/lung_registration/blob/main/images/ants.png?raw=true)
 
 ## Authors
-- [Colin Tenorio](https://github.com/CarmenColinTen)
+- [Carmen Colin](https://github.com/CarmenColinTen)
 - [Edwing Ulin](https://github.com/EdAlita)
+
+## Achivements
+
+- Third place on the Non rigid 3D Lung CT registration challenge.
+    - First place of the elastik algorithm
 
 ## License
 This project is licensed under the Creative Common Lincense - see the [LICENSE.md](LICENSE) file for details.
