@@ -1,5 +1,27 @@
 # Lung MRI Registration Project
 
+## Table of Contents
+
+1. [**Introduction**](#introduction)
+   - Overview and evaluation method using Target Registration Error (TRE).
+2. [**Objectives**](#objectives)
+   - Development, automation, and validation of the lung image registration process.
+3. [**Folders**](#folders)
+   - Descriptions of various folders like Noteebooks, Data, Parameters, etc.
+4. [**Detailed Description of Key Folders**](#detailed-description-of-key-folders)
+   - Specifics about `Utils` and `Notebooks` folders.
+5. [**Installation and Usage**](#installation-and-usage)
+   - Software requirements, installation guide, and usage instructions.
+6. [**Results**](#results)
+   - Summary of project achievements and TRE results visualization.
+7. [**Authors**](#authors)
+   - Contributions and profiles of the project team.
+8. [**Achievements**](#achievements)
+   - Awards and recognitions in relevant challenges.
+9. [**License**](#license)
+   - Licensing information of the project.
+
+
 ## Introduction
 This project aims to address the challenge of registering lung CT images between exhalation and inhalation phases. By aligning these images, the project seeks to facilitate detailed observation of lung tissue movement and changes. The effectiveness of image registration is evaluated using the Target Registration Error (TRE).
 
