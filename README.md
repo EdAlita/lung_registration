@@ -50,8 +50,8 @@ The project successfully achieved automated registration of lung MRI images, wit
 
 ## Achivements
 
-- Third place on the Non rigid 3D Lung CT registration challenge.
-    - First place of the elastik algorithm
+- 3rd place on the Non rigid 3D Lung CT registration challenge.
+    - 1st place of the elastik algorithm
 
 ## License
 This project is licensed under the Creative Common Lincense - see the [LICENSE.md](LICENSE) file for details.
