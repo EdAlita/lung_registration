@@ -29,6 +29,7 @@ This project aims to address the challenge of registering lung CT images between
 3. Validate the registration results through rigorous analysis.
 
 ## Folders
+
 - [**Noteebooks**](noteebooks): Notebooks of the implementation of a registration.
 - [**Data**](data): raw data and landmarks information.
 - [**Parameters**](parameters): parameters files used on the registration with elastik.
