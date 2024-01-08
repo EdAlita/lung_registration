@@ -268,7 +268,7 @@ def parse_raw_images(data_path: Path, out_path: Path
 
         # Parse raw image and parse landmarks
         img_out_paths, mask_out_paths, lm_pts_out_paths = [], [], []
-        for img_path, lm_path in zip([i_img_path, e_img_path], [ilm_path, elm_path]):
+        for img_path, lm_path in zip([i_img_path, e_img_path], [ilm_path,elm_path]):
             img = read_raw_sitk(
                 img_path, meta['size'], sitk.sitkInt16, meta['spacing'])
             img_out_path = case_out_path / f'{img_path.stem}.nii.gz'
